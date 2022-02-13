@@ -2,6 +2,14 @@
 
 Project 2 from [Cloud-Native Nanodegree](https://www.udacity.com/courses/cloud-native-application-architecture-nanodegree--nd064)
 
+## Prerequisites
+
+- [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
+- `kind create cluster --name connect`
+- `kubectl cluster-info --context kind-connect`
+- `kubectl get node`
+- `kubectl apply -f monolith/deployment/`
+
 ## Extracting the monolith
 
 The first step is to understand how the current system is architected and identify clear context boundaries. There are three diagrams for that:
