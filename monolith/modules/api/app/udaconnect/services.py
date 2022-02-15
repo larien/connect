@@ -4,12 +4,13 @@ from typing import Dict, List
 
 from app import db
 from app.udaconnect.models import Connection, Location, Person
-from app.udaconnect.schemas import ConnectionSchema, LocationSchema, PersonSchema
+from app.udaconnect.schemas import LocationSchema
+from app.udaconnect.clients import PersonsApi
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("udaconnect-api")
+logger = logging.getLogger("connect-api")
 
 
 class ConnectionService:
@@ -30,7 +31,9 @@ class ConnectionService:
         ).all()
 
         # Cache all users in memory for quick lookup
-        person_map: Dict[str, Person] = {person.id: person for person in PersonService.retrieve_all()}
+        persons = PersonsApi.retrieve_all()
+        print(persons)
+        person_map: Dict[str, Person] = {person.get("id", "1"): person for person in persons}
 
         # Prepare arguments for queries
         data = []

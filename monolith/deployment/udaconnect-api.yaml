@@ -31,10 +31,15 @@ spec:
         service: udaconnect-api
     spec:
       containers:
-      - image: udacity/nd064-udaconnect-api:latest
+      - image: larien/nd064-udaconnect-api:latest
         name: udaconnect-api
         imagePullPolicy: Always
         env:
+        - name: PERSONS_API_RETRIEVE_ALL
+          valueFrom:
+            configMapKeyRef:
+              name: api-env
+              key: PERSONS_API_RETRIEVE_ALL
         - name: DB_USERNAME
           valueFrom:
             configMapKeyRef:
