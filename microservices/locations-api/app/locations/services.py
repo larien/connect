@@ -30,6 +30,14 @@ class LocationService:
         return db.session.query(Location).all()
 
     @staticmethod
+    def retrieve_all_by_person(person_id, start_date=0, end_date=0) -> List[Location]:
+        return db.session.query(Location).filter(
+            Location.person_id == person_id
+        #).filter(Location.creation_time < end_date).filter(
+        #    Location.creation_time >= start_date TODO - obtain start and end date from request
+        ).all()
+
+    @staticmethod
     def create(location: Dict) -> Location:
         validation_results: Dict = Schema().validate(location)
         if validation_results:

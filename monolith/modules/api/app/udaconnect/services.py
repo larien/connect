@@ -5,7 +5,7 @@ from typing import Dict, List
 from app import db
 from app.udaconnect.models import Connection, Location, Person
 from app.udaconnect.schemas import LocationSchema
-from app.udaconnect.clients import PersonsApi
+from app.udaconnect.clients import PersonsApi, LocationsApi
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 
@@ -24,12 +24,8 @@ class ConnectionService:
         large datasets. This is by design: what are some ways or techniques to help make this data integrate more
         smoothly for a better user experience for API consumers?
         """
-        locations: List = db.session.query(Location).filter(
-            Location.person_id == person_id
-        ).filter(Location.creation_time < end_date).filter(
-            Location.creation_time >= start_date
-        ).all()
-
+        locations = LocationsApi.retrieve_by_person(person_id, start_date, end_date)
+        logger.warning(locations)
         # Cache all users in memory for quick lookup
         persons = PersonsApi.retrieve_all()
         print(persons)
@@ -41,14 +37,15 @@ class ConnectionService:
             data.append(
                 {
                     "person_id": person_id,
-                    "longitude": location.longitude,
-                    "latitude": location.latitude,
+                    "longitude": location.get("longitude", "0"),
+                    "latitude": location.get("latitude", "0"),
                     "meters": meters,
                     "start_date": start_date.strftime("%Y-%m-%d"),
                     "end_date": (end_date + timedelta(days=1)).strftime("%Y-%m-%d"),
                 }
             )
 
+        # TODO - move to locations api
         query = text(
             """
         SELECT  person_id, id, ST_X(coordinate), ST_Y(coordinate), creation_time
@@ -61,6 +58,7 @@ class ConnectionService:
         )
         result: List[Connection] = []
         for line in tuple(data):
+            # TODO - move to locations api
             for (
                 exposed_person_id,
                 location_id,

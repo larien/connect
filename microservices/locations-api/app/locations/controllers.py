@@ -24,8 +24,16 @@ class LocationsResource(Resource):
         return locations
 
 
+@api.route("/locations/person/<person_id>")
+class LocationsByPersonResource(Resource):
+    @responds(schema=Schema, many=True)
+    def get(self, person_id) -> List[Location]:
+        locations: List[Location] = Service.retrieve_all_by_person(person_id)
+        return locations
+
+
 @api.route("/locations")
-@api.route("/locations/<location_id>")
+@api.route("/locations/location/<location_id>")
 @api.param("location_id", "Unique ID for a given Location", _in="query")
 # TODO - handle not found
 class LocationResource(Resource):

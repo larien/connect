@@ -11,3 +11,13 @@ class PersonsApi:
             return "failures"
         print("print: ", response)
         return response.json()
+
+class LocationsApi:
+    @staticmethod
+    def retrieve_by_person(person_id, start_date, end_date) -> List[Person]:
+        # TODO - query param (creation time, person id)
+        response = requests.get(os.getenv("LOCATIONS_API")+"locations/person/"+person_id, verify=False)
+        if response.status_code != requests.codes.ok:
+            return "failures"
+        print("print: ", response)
+        return response.json()
