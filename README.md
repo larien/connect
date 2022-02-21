@@ -2,6 +2,12 @@
 
 Project 2 from [Cloud-Native Nanodegree](https://www.udacity.com/courses/cloud-native-application-architecture-nanodegree--nd064)
 
+## Links
+
+- Connect APP - [http://localhost:30000](http://localhost:30000)
+- Connect API - [http://localhost:30001](http://localhost:30001)
+- Persons API - [http://localhost:30002](http://localhost:30002)
+- Locations API - [http://localhost:30003](http://localhost:30003)
 ## Prerequisites
 
 - [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
