@@ -38,12 +38,12 @@ spec:
         - name: FLASK_RUN_PORT
           valueFrom:
             configMapKeyRef:
-              name: api-env
+              name: persons-api-env
               key: FLASK_RUN_PORT
         - name: DB_USERNAME
           valueFrom:
             configMapKeyRef:
-              name: db-env
+              name: persons-db-env
               key: DB_USERNAME
         - name: DB_PASSWORD
           valueFrom:
@@ -53,16 +53,16 @@ spec:
         - name: DB_NAME
           valueFrom:
             configMapKeyRef:
-              name: db-env
+              name: persons-db-env
               key: DB_NAME
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: db-env
+              name: persons-db-env
               key: DB_HOST
         - name: DB_PORT
           valueFrom:
             configMapKeyRef:
-              name: db-env
+              name: persons-db-env
               key: DB_PORT
       restartPolicy: Always
