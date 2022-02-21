@@ -22,6 +22,7 @@ metadata:
   name: locations-api
 spec:
   replicas: 1
+  revisionHistoryLimit: 0 # Default to 10 if not specified
   selector:
     matchLabels:
       service: locations-api
