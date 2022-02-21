@@ -32,6 +32,15 @@ class LocationsByPersonResource(Resource):
         return locations
 
 
+@api.route("/locations/calculate")
+class LocationsCalculateResource(Resource):
+    @accepts(schema=Schema)
+    @responds(schema=Schema, many=True)
+    def post(self) -> List[Location]:
+        locations: List[Location] = Service.calculate_location(request.get_json())
+        return locations
+
+
 @api.route("/locations")
 @api.route("/locations/location/<location_id>")
 @api.param("location_id", "Unique ID for a given Location", _in="query")

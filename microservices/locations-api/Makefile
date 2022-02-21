@@ -5,3 +5,5 @@ deliver:
 deploy:
 	kubectl apply -f deployment/
 	kubectl rollout restart deployment locations-api
+
+api: deliver deploy

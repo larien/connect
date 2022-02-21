@@ -16,7 +16,7 @@ class Model(db.Model):
     __tablename__ = "location"
 
     id = Column(BigInteger, primary_key=True)
-    person_id = Column(Integer, nullable=False)
+    person_id = Column(Integer, nullable=True)
     coordinate = Column(Geometry("POINT"), nullable=False)
     creation_time = Column(DateTime, nullable=False, default=datetime.utcnow)
     _wkt_shape: str = None

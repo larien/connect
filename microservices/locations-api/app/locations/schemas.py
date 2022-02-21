@@ -9,6 +9,9 @@ class LocationSchema(Schema):
     person_id = fields.Integer()
     longitude = fields.String(attribute="longitude")
     latitude = fields.String(attribute="latitude")
+    start_date = fields.String(attribute="start_date")
+    end_date = fields.String(attribute="end_date")
+    meters = fields.Integer()
     creation_time = fields.DateTime()
 
     class Meta:

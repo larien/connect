@@ -38,6 +38,45 @@ class LocationService:
         ).all()
 
     @staticmethod
+    def calculate_location(location: Dict) -> Location:
+        validation_results: Dict = Schema().validate(location)
+        if validation_results:
+            logger.warning(f"Unexpected data format in payload: {validation_results}")
+            raise Exception(f"Invalid payload: {validation_results}")
+
+        logger.warning("payload: ", location)
+
+        query = text(
+            """
+        SELECT  person_id, id, ST_X(coordinate), ST_Y(coordinate), creation_time
+        FROM    location
+        WHERE   ST_DWithin(coordinate::geography,ST_SetSRID(ST_MakePoint(:latitude,:longitude),4326)::geography, :meters)
+        AND     person_id != :person_id
+        AND     TO_DATE(:start_date, 'YYYY-MM-DD') <= creation_time
+        AND     TO_DATE(:end_date, 'YYYY-MM-DD') > creation_time;
+        """
+        )
+        result: List[Location] = []
+
+        for (
+            exposed_person_id,
+            location_id,
+            exposed_lat,
+            exposed_long,
+            exposed_time,
+        ) in db.engine.execute(query, **location):
+            location = Location(
+                id=location_id,
+                person_id=exposed_person_id,
+                creation_time=exposed_time,
+            )
+            location.set_wkt_with_coords(exposed_lat, exposed_long)
+            result.append(location)
+
+        return result
+
+
+    @staticmethod
     def create(location: Dict) -> Location:
         validation_results: Dict = Schema().validate(location)
         if validation_results:
