@@ -3,4 +3,4 @@ kind: ConfigMap
 data:
   FLASK_RUN_PORT: "5002"
 metadata:
-  name: api-env
+  name: locations-api-env
