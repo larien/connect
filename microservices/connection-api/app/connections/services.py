@@ -2,21 +2,19 @@ import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
 
-from app import db
-from app.udaconnect.models import Connection, Location, Person
-from app.udaconnect.schemas import LocationSchema
-from app.udaconnect.clients import PersonsApi, LocationsApi
-from geoalchemy2.functions import ST_AsText, ST_Point
-from sqlalchemy.sql import text
+from app.connections.models import Connection, Location, Person
+from app.connections.schemas import ConnectionSchema, PersonSchema
+from app.connections.clients import LocationsApi, PersonsApi
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("connect-api")
+logger = logging.getLogger("connections-api")
+
 
 
 class ConnectionService:
     @staticmethod
     def find_contacts(person_id: int, start_date: datetime, end_date: datetime, meters=5
-    ) -> List[Connection]:
+    ) -> List[ConnectionSchema]:
         """
         Finds all Person who have been within a given distance of a given Person within a date range.
 
@@ -29,7 +27,7 @@ class ConnectionService:
         persons = PersonsApi.retrieve_all()
         # TODO - handle error
         person_map: Dict[str, Person] = {str(person.get("id", "-1")): person for person in persons}
-
+        # TODO - retrieve locations per person instead of every person
         result: List[Connection] = []
         for location in locations:
             line = {
@@ -53,32 +51,3 @@ class ConnectionService:
 
         return result
 
-
-class LocationService:
-    @staticmethod
-    def retrieve(location_id) -> Location:
-        location, coord_text = (
-            db.session.query(Location, Location.coordinate.ST_AsText())
-            .filter(Location.id == location_id)
-            .one()
-        )
-
-        # Rely on database to return text form of point to reduce overhead of conversion in app code
-        location.wkt_shape = coord_text
-        return location
-
-    @staticmethod
-    def create(location: Dict) -> Location:
-        validation_results: Dict = LocationSchema().validate(location)
-        if validation_results:
-            logger.warning(f"Unexpected data format in payload: {validation_results}")
-            raise Exception(f"Invalid payload: {validation_results}")
-
-        new_location = Location()
-        new_location.person_id = location["person_id"]
-        new_location.creation_time = location["creation_time"]
-        new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        db.session.add(new_location)
-        db.session.commit()
-
-        return new_location

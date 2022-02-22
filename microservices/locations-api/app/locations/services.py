@@ -89,5 +89,6 @@ class LocationService:
         new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
         db.session.add(new_location)
         db.session.commit()
-
+        # TODO - send message to Kafka instead of storing it here
+        # TODO - create location consumer
         return new_location
