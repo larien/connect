@@ -1,0 +1,10 @@
+# Architecture design specifications
+
+Everything is more detailed in the root level README.
+
+- The monolith is broken in three uncoupled APIs besides the frontend app: connections, persons and locations.
+- Since it's expected that locations-api has a high load increase, it communicates via gRPC.
+- Besides that, each location creation sends a message to a Kafka topic that will be consumed by locations-consumer in order to be stored in the database. That way the locations-api is not impacted by the high load while writing to the database.
+- I decided to use the same database with different tables to make use of the foreign key relation validation in SQL.
+- Another important change is the find contacts logic for connections: instead of finding every connection for every person, only the requested person is calculated.
+- I could include a cache layer for the connection calculation in the future.
