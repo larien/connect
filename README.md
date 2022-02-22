@@ -89,4 +89,18 @@ From that we have our microservices implemented and we can implement gRPC betwee
 
 ### Step 5: Implement gRPC communication in the internal services
 
-After that, we need to evaluate the performance and possible caveats in the system.
+Since persons and connect APIs are dependencies of frontend, it's better to keep them as RESTful APIs and not migrate to gRPC. Since we expect a high load of messages in locations-api, this is a good candidate to provide it.
+Therefore, locations-api will comunicate only via gRPC.
+
+### Step 6: Implement Kafka broker
+
+As mentioned earlier, locations-api is expected to have a high load of informations and it seems to be the best approach on having a queue mechanism to avoid losing any message and improve the performance. Therefore, we need to:
+- send a message to a Kafka topic every time a location is created
+- implement a consumer that'll receive these messages and write locations in the database
+
+
+### Step 7: Cleanup
+
+### Step 8: OpenAPI specification
+
+### Step 9: Postman specification

@@ -22,18 +22,18 @@ class ConnectionService:
         large datasets. This is by design: what are some ways or techniques to help make this data integrate more
         smoothly for a better user experience for API consumers?
         """
-        connections = LocationsApi.retrieve_by_person(person_id, start_date, end_date)
+        locations = LocationsApi.retrieve_by_person(person_id, start_date, end_date)
         # TODO - handle error
         persons = PersonsApi.retrieve_all()
         # TODO - handle error
         person_map: Dict[str, Person] = {str(person.get("id", "-1")): person for person in persons}
-
+        # TODO - retrieve locations per person instead of every person
         result: List[Connection] = []
-        for connection in connections:
+        for location in locations:
             line = {
                     "person_id": person_id,
-                    "longitude": connection.get("longitude", "0"),
-                    "latitude": connection.get("latitude", "0"),
+                    "longitude": location.get("longitude", "0"),
+                    "latitude": location.get("latitude", "0"),
                     "meters": meters,
                     "start_date": start_date.strftime("%Y-%m-%d"),
                     "end_date": (end_date + timedelta(days=1)).strftime("%Y-%m-%d"),
